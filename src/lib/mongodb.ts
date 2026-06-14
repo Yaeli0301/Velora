@@ -1,6 +1,7 @@
 import { MongoClient, type Db } from "mongodb";
 
-const uri = process.env.MONGODB_URI;
+const uri =
+  process.env.MONGODB_URI ?? process.env.velora_MONGODB_URI;
 const dbName = process.env.MONGODB_DB ?? "velora";
 
 declare global {
