@@ -70,12 +70,20 @@ export default function Home() {
               יכולות
             </Link>
           </nav>
-          <Link
-            href="/onboarding"
-            className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:opacity-90"
-          >
-            התחל עכשיו
-          </Link>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Link
+              href="/login"
+              className="rounded-full px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-muted"
+            >
+              התחברות
+            </Link>
+            <Link
+              href="/onboarding"
+              className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:opacity-90"
+            >
+              התחל עכשיו
+            </Link>
+          </div>
         </div>
       </header>
 

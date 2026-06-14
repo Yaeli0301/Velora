@@ -57,9 +57,13 @@ export default function LoginForm() {
           </div>
         )}
 
-        <h1 className="text-2xl font-bold">שמרי את התוכנית שלך</h1>
+        <h1 className="text-2xl font-bold">
+          {saved ? "שמרי את התוכנית שלך" : "התחברות ל-Velora"}
+        </h1>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Google, קישור למייל, או המשך כאורח/ת.
+          {saved
+            ? "התחבר/י כדי לשמור את התוכנית בענן."
+            : "כניסה והרשמה באותו מקום — Google או קישור למייל."}
         </p>
 
         <div className="mt-8 space-y-4">
