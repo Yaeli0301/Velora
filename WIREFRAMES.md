@@ -1,0 +1,667 @@
+# Velora — Wireframes
+
+**Phase:** NEXT (Pre-Implementation)  
+**Version:** 1.0  
+**Design language:** Premium fintech · Notion simplicity · Linear clarity  
+**Direction:** RTL Hebrew · Mobile-first · Desktop responsive  
+**Status:** Specification only — no implementation code
+
+---
+
+## Design Tokens (Wireframe Reference)
+
+```
+Colors
+  Primary       #0F8A5F   (actions, on-track)
+  Navy          #0B1B2B   (headlines)
+  Background    #F6F8FB   (page)
+  Card          #FFFFFF   (surfaces)
+  Muted         #5B6B7C   (secondary text)
+  Warning       #D9822B   (at-risk)
+  Danger        #D64545   (off-track, sparingly)
+  Primary Soft  #E6F6EF   (decision card tint)
+
+Typography (Heebo)
+  Display       28px / 700   Decision headline
+  Title         22px / 700   Screen title
+  Body          16px / 400   Rationale, chat
+  Caption       13px / 500   Labels, metadata
+  Micro         11px / 400   Legal, timestamps
+
+Spacing scale: 4 · 8 · 12 · 16 · 24 · 32 · 48 · 64
+Radius: 12 (inputs) · 16 (cards) · 24 (hero) · 999 (pills)
+Shadow: soft (nav) · card (hero decision only)
+Max content width (desktop): 480px (mobile column) · 720px (chat) · 960px (plan)
+```
+
+---
+
+## Global Shell
+
+### Mobile Shell (375×812 reference)
+
+All authenticated screens share this frame.
+
+```
+┌─────────────────────────────────────┐  ← safe area top
+│  ┌──┐                               │
+│  │V │  Velora              [avatar] │  56px header, blur bg
+│  └──┘                               │
+├─────────────────────────────────────┤
+│                                     │
+│                                     │
+│         SCREEN CONTENT              │  scroll, pb-80 for nav
+│         (varies per screen)         │
+│                                     │
+│                                     │
+├─────────────────────────────────────┤
+│   🏠        💬        🎯            │  64px bottom nav
+│  בית      ה-CFO     התוכנית         │  fixed, thumb zone
+└─────────────────────────────────────┘  ← safe area bottom
+```
+
+**Nav rules:** 3 items only. Active = primary color + label bold. No budget tab.
+
+### Desktop Shell (1280×800 reference)
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  ┌──┐ Velora                              [avatar ▾]  Settings   │  64px
+├────────────┬─────────────────────────────────────────────────────┤
+│            │                                                     │
+│  🏠 בית    │              CONTENT COLUMN                       │
+│            │              max-width 480–720px                    │
+│  💬 ה-CFO  │              centered                             │
+│            │                                                     │
+│  🎯 תוכנית │                                                     │
+│            │                                                     │
+│  240px     │                                                     │
+│  sidebar   │                                                     │
+│  (sticky)  │                                                     │
+└────────────┴─────────────────────────────────────────────────────┘
+```
+
+**Desktop rules:** Sidebar replaces bottom nav. Content never full-bleed — always centered column. Chat uses wider column (720px).
+
+---
+
+## 1. Decision Home
+
+**Route:** `/home`  
+**Purpose:** Single screen answer — "What should I do?"  
+**Replaces:** `/dashboard`
+
+### 1.1 Mobile — Default (Collapsed)
+
+```
+┌─────────────────────────────────────┐
+│  V  Velora                    [👤]  │
+├─────────────────────────────────────┤
+│                                     │
+│  שלום דניאל                         │  caption, muted
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  ◉  ההחלטה שלך השבוע        │    │  primary-soft bg
+│  │                             │    │  radius 24, shadow-card
+│  │  הגדל חיסכון חודשי          │    │  28px bold, navy
+│  │  ב-₪840                     │    │
+│  │                             │    │
+│  │  כדי להגיע למקדמה לדירה     │    │  16px, muted
+│  │  עד יוני 2031               │    │
+│  │                             │    │
+│  │  ┌─────────────────────┐    │    │
+│  │  │    אני מצטרף/ת     │    │    │  primary fill, full width
+│  │  └─────────────────────┘    │    │
+│  │                             │    │
+│  │  ┌──────────┐ ┌──────────┐  │    │
+│  │  │  למה?    │ │  לא עכשיו│  │    │  ghost buttons
+│  │  └──────────┘ └──────────┘  │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │  verdict strip — single row
+│  │ ● בדרך הנכונה  │ 72  │ 6.2 ש' │    │  pill segments, divider
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │  proof loop (if returning)
+│  │ ↑ מאז שבוע שמרת ₪400 נוסף  │    │  subtle green tint
+│  │   — 2 שבועות קרובים ליעד    │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │  CFO insight — one line
+│  │ 💬 הוצאות מזון עלו — שאל    │    │
+│  │    את ה-CFO                 │    │  tappable → /cfo
+│  └─────────────────────────────┘    │
+│                                     │
+│  ▼  הצג פרטים                       │  13px, muted, chevron
+│                                     │
+│  לא ייעוץ השקעות · מבוסס על        │  micro legal
+│  הנתונים שהזנת                      │
+│                                     │
+├─────────────────────────────────────┤
+│   🏠        💬        🎯            │
+└─────────────────────────────────────┘
+```
+
+### 1.2 Mobile — Expanded Details
+
+Triggered by "הצג פרטים". Metrics move here — never in hero.
+
+```
+│  ▲  הסתר פרטים                      │
+│                                     │
+│  ┌──────────────┐ ┌──────────────┐  │
+│  │ הכנסה        │ │ הוצאות       │  │  2-col grid
+│  │ ₪14,500      │ │ ₪11,260      │  │
+│  └──────────────┘ └──────────────┘  │
+│  ┌──────────────┐ ┌──────────────┐  │
+│  │ חיסכון       │ │ שיעור        │  │
+│  │ ₪3,240       │ │ 22%          │  │
+│  └──────────────┘ └──────────────┘  │
+│                                     │
+│  יעד: מקדמה לדירה                   │
+│  ████████░░░░░░░░  36%              │  thin progress, 4px height
+│  ₪180,000 מתוך ₪500,000             │
+│                                     │
+│  תחזית (אם תמשיך כך)                │
+│  ┌────────┐ ┌────────┐ ┌────────┐   │
+│  │ 1 שנה  │ │ 3 שנים │ │ 5 שנים │   │
+│  │ ₪39K   │ │ ₪117K  │ │ ₪195K  │   │
+│  └────────┘ └────────┘ └────────┘   │
+│                                     │
+│  ⚠ 2 קטגוריות דורשות תשומת לב      │  links to CFO query
+```
+
+### 1.3 Mobile — States
+
+**At-risk verdict strip:**
+```
+│  ┌─────────────────────────────┐    │
+│  │ ◐ דורש תשומת לב │ 58 │ 8.1 ש'│    │  amber dot, not red hero
+│  └─────────────────────────────┘    │
+```
+
+**Off-track — decision card tone shifts, not alarm UI:**
+```
+│  │  כדי לחזור למסלול, צמצם      │    │
+│  │  הוצאות ב-₪1,200/חודש        │    │
+```
+
+**Empty / no data yet:**
+```
+│  ┌─────────────────────────────┐    │
+│  │  עוד לא מספיק מידע          │    │
+│  │  הזן הכנסה והוצאות חודשיות  │    │
+│  │  ┌─────────────────────┐    │    │
+│  │  │   עדכן נתונים       │    │    │
+│  │  └─────────────────────┘    │    │
+│  └─────────────────────────────┘    │
+```
+
+### 1.4 Desktop — Decision Home
+
+```
+┌──────────┬────────────────────────────────────────┐
+│ 🏠 בית ● │                                        │
+│ 💬 CFO   │     ┌────────────────────────────┐     │
+│ 🎯 תוכנית│     │   DECISION HERO CARD       │     │  480px centered
+│          │     │   (same as mobile)         │     │
+│          │     └────────────────────────────┘     │
+│          │     ┌────────────────────────────┐     │
+│          │     │   verdict strip            │     │
+│          │     └────────────────────────────┘     │
+│          │     proof + insight                    │
+│          │     ▼ details (inline expand)          │
+└──────────┴────────────────────────────────────────┘
+```
+
+**Desktop enhancement:** Optional right rail (960px+ layouts) shows mini plan summary — never competes with decision hero.
+
+```
+                    ┌──────────────┐
+                    │ 🎯 דירה      │
+                    │ 6.2 שנים     │
+                    │ [פתח תוכנית] │
+                    └──────────────┘
+```
+
+---
+
+## 2. AI CFO Chat
+
+**Route:** `/cfo`  
+**Purpose:** Primary AI interaction — ask, understand, act  
+**Replaces:** `/advisor`
+
+### 2.1 Mobile — Active Conversation
+
+```
+┌─────────────────────────────────────┐
+│  ←  ה-CFO שלך                  [⋯]  │  back only from deep link
+├─────────────────────────────────────┤
+│                                     │
+│         ┌─────────────────────┐     │
+│         │ היי! אני ה-CFO של   │     │  assistant bubble
+│         │ Velora. שאל אותי    │     │  bg muted, radius 16
+│         │ כל דבר — בשפה       │     │  align: start (RTL)
+│         │ רגילה.              │     │
+│         └─────────────────────┘     │
+│                                     │
+│  ┌─────────────────────┐            │
+│  │ כמה לחסוך לדירה     │            │  user bubble
+│  │ בעוד 5 שנים?        │            │  bg primary, white text
+│  └─────────────────────┘            │
+│                                     │
+│         ┌─────────────────────┐     │
+│         │ כדי להגיע למקדמה    │     │
+│         │ לדירה עד 2031,      │     │
+│         │ צריך ₪6,667/חודש.   │     │
+│         │                     │     │
+│         │ ┌─────────────────┐ │     │  inline decision card
+│         │ │ 💡 הגדל חיסכון  │ │     │  nested in bubble
+│         │ │    ב-₪840       │ │     │
+│         │ │ [קבל המלצה]     │ │     │
+│         │ └─────────────────┘ │     │
+│         │                     │     │
+│         │ מבוסס על הכנסה      │     │  transparency line
+│         │ ₪14,500 · יעד דירה  │     │  11px muted
+│         └─────────────────────┘     │
+│                                     │
+├─────────────────────────────────────┤
+│  ┌─────────┐ ┌─────────┐ ┌───────┐  │  suggested chips
+│  │מתי אגיע│ │לאן הולך│ │מה אם…│  │  horizontal scroll
+│  └─────────┘ └─────────┘ └───────┘  │
+├─────────────────────────────────────┤
+│  ┌─────────────────────────┐ ┌───┐  │
+│  │ שאל את ה-CFO…           │ │ ↑ │  │  input + send
+│  └─────────────────────────┘ └───┘  │  sticky above nav
+├─────────────────────────────────────┤
+│   🏠        💬 ●      🎯            │
+└─────────────────────────────────────┘
+```
+
+### 2.2 Mobile — Typing / Loading
+
+```
+│         ┌─────────────────────┐     │
+│         │  ● ● ●              │     │  subtle pulse dots
+│         └─────────────────────┘     │
+```
+
+### 2.3 Mobile — Action Applied Confirmation
+
+```
+│         ┌─────────────────────┐     │
+│         │ ✓ שמרתי. עדכנתי את  │     │
+│         │   ההחלטה השבועית   │     │
+│         │   בדף הבית.         │     │
+│         │   [חזרה לבית]       │     │
+│         └─────────────────────┘     │
+```
+
+### 2.4 Desktop — Split View (1280px+)
+
+Chat deserves width. Home context optional.
+
+```
+┌──────────┬──────────────────────────────┬─────────────────┐
+│ sidebar  │         CHAT (720px)         │  CONTEXT PANEL  │
+│          │                              │  280px, optional│
+│          │  [messages...]               │                 │
+│          │                              │  יעד: דירה      │
+│          │                              │  ציון: 72       │
+│          │                              │  החלטה פעילה:   │
+│          │  [chips]                     │  ₪840/חודש      │
+│          │  [input____________] [send]  │                 │
+└──────────┴──────────────────────────────┴─────────────────┘
+```
+
+**Linear clarity:** Context panel is read-only mirror — user never edits here.
+
+### 2.5 Chat Bubble Spec
+
+| Role | BG | Align (RTL) | Radius |
+|------|-----|-------------|--------|
+| Assistant | `--muted` | right (start) | 16px 16px 16px 4px |
+| User | `--primary` | left (end) | 16px 16px 4px 16px |
+| System | transparent | center | — |
+
+Max bubble width: 85% mobile · 70% desktop.
+
+---
+
+## 3. Life Plan
+
+**Route:** `/plan`  
+**Purpose:** Life trajectory clarity — not a task list  
+**Replaces:** `/goals`
+
+### 3.1 Mobile — Primary Plan Hero
+
+```
+┌─────────────────────────────────────┐
+│  V  Velora                    [👤]  │
+├─────────────────────────────────────┤
+│                                     │
+│  התוכנית שלך                        │  title 22px
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  🏠                          │    │
+│  │  מקדמה לדירה                │    │  primary plan hero
+│  │  היעד המרכזי שלך             │    │  card, radius 24
+│  │                             │    │
+│  │  ┌───────────────────────┐  │    │
+│  │  │                       │  │    │
+│  │  │      6.2 שנים         │  │    │  large number — THE answer
+│  │  │   עד ליעד בקצב הנוכחי  │  │    │
+│  │  │                       │  │    │
+│  │  └───────────────────────┘  │    │
+│  │                             │    │
+│  │  ████████░░░░░░░░  36%      │    │
+│  │  ₪180,000 / ₪500,000        │    │
+│  │                             │    │
+│  │  ● בדרך הנכונה              │    │  status badge
+│  └─────────────────────────────┘    │
+│                                     │
+│  מה אם?                             │  section label
+│  ┌──────────┐ ┌──────────┐         │
+│  │ +₪800    │ │ −שנה     │         │  scenario chips
+│  │ חיסכון   │ │ מהיעד    │         │  tap → modal/sheet
+│  └──────────┘ └──────────┘         │
+│  ┌──────────┐ ┌──────────┐         │
+│  │ +10%     │ │ עיכוב    │         │
+│  │ הכנסה    │ │ 6 חודשים │         │
+│  └──────────┘ └──────────┘         │
+│                                     │
+│  תוכניות נוספות                     │
+│  ┌─────────────────────────────┐    │
+│  │ 💰 קרן חירום    70%   ●    │    │  compact row, tappable
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ 💬 רוצה לשנות יעד? שאל CFO  │    │  CTA to chat, not form
+│  └─────────────────────────────┘    │
+│                                     │
+├─────────────────────────────────────┤
+│   🏠        💬        🎯 ●          │
+└─────────────────────────────────────┘
+```
+
+### 3.2 Mobile — Scenario Sheet (Bottom Sheet)
+
+Triggered by "מה אם?" chip.
+
+```
+┌─────────────────────────────────────┐
+│  ─────  (drag handle)               │
+│                                     │
+│  מה אם תגדיל חיסכון ב-₪800?         │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  6.2 שנים  →  4.8 שנים      │    │  before → after
+│  │  ✓ תגיע 1.4 שנים מוקדם     │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  קבל כהחלטה שבועית          │    │  primary CTA
+│  └─────────────────────────────┘    │
+│  ┌─────────────────────────────┐    │
+│  │  שאל את ה-CFO למה            │    │  secondary
+│  └─────────────────────────────┘    │
+└─────────────────────────────────────┘
+```
+
+### 3.3 Desktop — Life Plan
+
+```
+┌──────────┬────────────────────────────────────────┐
+│ sidebar  │   ┌────────────────────────────────┐   │
+│          │   │  PRIMARY PLAN HERO             │   │  560px
+│          │   └────────────────────────────────┘   │
+│          │   [scenario chips row]                 │
+│          │   ┌────────────┐ ┌────────────┐         │
+│          │   │ secondary  │ │ secondary  │         │  2-col secondary
+│          │   │ plan       │ │ plan       │         │
+│          │   └────────────┘ └────────────┘         │
+└──────────┴────────────────────────────────────────┘
+```
+
+---
+
+## 4. Onboarding V2
+
+**Route:** `/onboarding`  
+**Purpose:** Life context intake → first decision → account save  
+**Format:** One question per screen, conversational CFO tone
+
+### 4.1 Shared Onboarding Chrome
+
+```
+┌─────────────────────────────────────┐
+│  ← Velora              שלב 2 מתוך 5 │  minimal header
+│  ████████░░░░░░░░░░░░░░  40%        │  thin progress, 2px
+├─────────────────────────────────────┤
+│                                     │
+│              CONTENT                │
+│                                     │
+├─────────────────────────────────────┤
+│  ┌─────────────────────────────┐    │
+│  │         המשך                │    │  single primary CTA
+│  └─────────────────────────────┘    │  sticky bottom
+└─────────────────────────────────────┘
+```
+
+No bottom nav during onboarding. No sidebar.
+
+---
+
+### 4.2 Screen 1 — Income
+
+```
+│                                     │
+│         ┌───┐                       │
+│         │ V │  (CFO avatar mark)    │
+│         └───┘                       │
+│                                     │
+│  כמה אתה מרוויח בחודש?              │  28px, centered
+│  אחרי מס — מספר משוער מספיק.        │  muted
+│                                     │
+│  ┌────────┐ ┌────────┐ ┌────────┐   │
+│  │ ₪12K   │ │ ₪15K   │ │ ₪18K   │   │  preset pills
+│  └────────┘ └────────┘ └────────┘   │  3-col grid
+│  ┌────────┐ ┌────────┐ ┌────────┐   │
+│  │ ₪22K   │ │ ₪28K   │ │ אחר    │   │
+│  └────────┘ └────────┘ └────────┘   │
+│                                     │
+│  ┌─────────────────────────────┐    │  if "אחר" selected
+│  │  ₪ ____________             │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  🔒 הנתונים נשארים אצלך            │  trust microcopy
+```
+
+---
+
+### 4.3 Screen 2 — Life Dream
+
+```
+│  מה החלום הגדול שלך?                 │
+│  בחר יעד אחד — נבנה תוכנית סביבו.   │
+│                                     │
+│  ┌──────────────┐ ┌──────────────┐  │
+│  │ 🏠           │ │ 💍           │  │
+│  │ דירה         │ │ חתונה        │  │  2-col cards
+│  │ ~₪500K       │ │ ~₪150K       │  │  icon + label + hint
+│  └──────────────┘ └──────────────┘  │
+│  ┌──────────────┐ ┌──────────────┐  │
+│  │ 🚗           │ │ 💰           │  │
+│  │ רכב          │ │ חיסכון       │  │
+│  └──────────────┘ └──────────────┘  │
+│  ┌──────────────┐ ┌──────────────┐  │
+│  │ 📉           │ │ 🎯           │  │
+│  │ יציאה ממינוס │ │ עצמאות       │  │
+│  └──────────────┘ └──────────────┘  │
+```
+
+Selected state: primary border + soft bg (not heavy fill).
+
+---
+
+### 4.4 Screen 3 — Timeline
+
+```
+│  מתי תרצה להגיע?                    │
+│  ליעד: מקדמה לדירה                  │  context reminder
+│                                     │
+│     ┌────┐ ┌────┐ ┌────┐ ┌────┐     │
+│     │ 3  │ │ 5  │ │ 7  │ │ 10 │     │  year pills
+│     │שנים│ │שנים│ │שנים│ │שנים│     │
+│     └────┘ └────┘ └────┘ └────┘     │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  תצוגה מקדימה               │    │  preview card
+│  │  צריך ~₪6,667/חודש          │    │
+│  │  כדי להגיע ב-5 שנים         │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  סכום יעד מותאם (אופציונלי)         │
+│  ┌─────────────────────────────┐    │
+│  │  ₪ ____________             │    │
+│  └─────────────────────────────┘    │
+```
+
+---
+
+### 4.5 Screen 4 — Preparing (Loading)
+
+CFO "thinking" — not a spinner alone.
+
+```
+│                                     │
+│         ┌───┐                       │
+│         │ V │  ◌ ◌ ◌               │  subtle animation
+│         └───┘                       │
+│                                     │
+│  רגע — אני מכין את                  │
+│  ההחלטה הראשונה שלך...              │
+│                                     │
+│  ✓ מנתח הכנסה                       │  checklist reveals
+│  ✓ בודק יעד                         │  sequentially
+│  ◌ מחשב מסלול                       │
+│                                     │
+│         עוד כ-10 שניות              │
+```
+
+---
+
+### 4.6 Screen 5 — First Decision (Activation)
+
+**Critical:** User sees value BEFORE account creation.
+
+```
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  ✦  ההחלטה הראשונה שלך      │    │
+│  │                             │    │
+│  │  הגדל חיסכון חודשי          │    │  same hero as Decision Home
+│  │  ב-₪840                     │    │
+│  │                             │    │
+│  │  כדי להגיע למקדמה לדירה     │    │
+│  │  עד יוני 2031               │    │
+│  │                             │    │
+│  │  ┌─────────────────────┐    │    │
+│  │  │   הבנתי, בוא נתחיל  │    │    │
+│  │  └─────────────────────┘    │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │ ● בדרך הנכונה │ 72 │ 5.0 ש'  │    │  verdict strip
+│  └─────────────────────────────┘    │
+│                                     │
+│  מבוסס על ₪15,000 הכנסה · יעד דירה  │
+```
+
+---
+
+### 4.7 Screen 6 — Save Plan (Account Gate)
+
+```
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │         ✓                   │    │
+│  │  התוכנית שלך מוכנה          │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  שמרי את ההחלטה                    │
+│  כדי שלא תאבד את התוכנית           │
+│                                     │
+│  ┌─────────────────────────────┐    │
+│  │  G  המשך עם Google          │    │
+│  └─────────────────────────────┘    │
+│  ┌─────────────────────────────┐    │
+│  │  ✉  המשך עם אימייל           │    │
+│  └─────────────────────────────┘    │
+│                                     │
+│  אולי אחר כך                        │  ghost — skips to /home guest
+│                                     │
+```
+
+---
+
+### 4.8 Desktop — Onboarding
+
+Centered card, max-width 440px. Same screens, more whitespace.
+
+```
+┌────────────────────────────────────────────────────────┐
+│                                                        │
+│              ┌──────────────────────────┐              │
+│              │                          │              │
+│              │   ONBOARDING SCREEN      │              │
+│              │   (single column)        │              │
+│              │                          │              │
+│              └──────────────────────────┘              │
+│                                                        │
+└────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 5. Responsive Breakpoints
+
+| Breakpoint | Width | Layout changes |
+|------------|-------|----------------|
+| Mobile S | 320–374 | Single column, tighter padding 16px |
+| Mobile | 375–767 | Default wireframes above, padding 20px |
+| Tablet | 768–1023 | Wider chips, 2-col plan secondary |
+| Desktop | 1024–1279 | Sidebar nav, centered content |
+| Desktop L | 1280+ | Chat split view + context panel |
+
+---
+
+## 6. Motion Spec (Wireframe Reference)
+
+| Element | Motion | Duration |
+|---------|--------|----------|
+| Decision hero appear | fade + translateY 8px | 300ms ease-out |
+| Details expand | height accordion | 250ms |
+| Chat message | fade in | 150ms |
+| Scenario sheet | slide up | 300ms spring |
+| Progress bar | width fill | 400ms |
+| Page transition | crossfade | 200ms |
+
+Respect `prefers-reduced-motion`: instant, no translate.
+
+---
+
+## 7. Accessibility Annotations
+
+- Decision hero: `role="region"` `aria-label="ההחלטה השבועית שלך"`
+- Primary CTA: verb label, min 44×44px touch
+- Verdict strip: status never color-only (icon + text)
+- Chat: `aria-live="polite"` on new assistant messages
+- Bottom nav: `aria-current="page"` on active item
+- Onboarding progress: `aria-valuenow` / `aria-valuemax`
+
+---
+
+*End of Wireframes — see SCREEN_FLOW.md and COMPONENT_MAP.md*

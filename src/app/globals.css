@@ -1,26 +1,34 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f6f8fb;
+  --foreground: #0b1b2b;
   --card: #ffffff;
-  --primary: #059669;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --border: #e2e8f0;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --primary: #0f8a5f;
+  --primary-soft: #e6f6ef;
+  --accent: #0b3d2e;
+  --navy: #0b1b2b;
+  --muted: #eef2f7;
+  --muted-foreground: #5b6b7c;
+  --border: #e3e9f0;
+  --success: #0f8a5f;
+  --warning: #d9822b;
+  --danger: #d64545;
+  --ring: rgba(15, 138, 95, 0.18);
 }
 
 .dark {
-  --background: #020617;
-  --foreground: #f8fafc;
-  --card: #0f172a;
-  --primary: #34d399;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --border: #334155;
+  --background: #06121d;
+  --foreground: #eaf2f8;
+  --card: #0d1f2e;
+  --primary: #2fd39a;
+  --primary-soft: #102a22;
+  --accent: #2fd39a;
+  --navy: #eaf2f8;
+  --muted: #122636;
+  --muted-foreground: #8aa0b3;
+  --border: #1c3346;
+  --ring: rgba(47, 211, 154, 0.2);
 }
 
 @theme inline {
@@ -28,6 +36,9 @@
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-primary: var(--primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-navy: var(--navy);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
@@ -41,12 +52,27 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.bg-hero-gradient {
+  background:
+    radial-gradient(60% 50% at 80% 0%, rgba(15, 138, 95, 0.1) 0%, transparent 60%),
+    radial-gradient(50% 50% at 10% 10%, rgba(11, 61, 46, 0.08) 0%, transparent 55%);
+}
+
+.shadow-soft {
+  box-shadow: 0 1px 2px rgba(11, 27, 43, 0.04), 0 8px 24px rgba(11, 27, 43, 0.06);
+}
+
+.shadow-card {
+  box-shadow: 0 1px 3px rgba(11, 27, 43, 0.05), 0 18px 40px rgba(11, 27, 43, 0.1);
 }
 
 @keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -55,5 +81,10 @@ body {
 }
 
 .animate-fade-in {
-  animation: fade-in 0.4s ease-out forwards;
+  animation: fade-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.animate-fade-in-delay {
+  opacity: 0;
+  animation: fade-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
 }

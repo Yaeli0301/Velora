@@ -9,12 +9,12 @@ const heebo = Heebo({
 });
 
 export const metadata: Metadata = {
-  title: "Personal CFO | היועץ הפיננסי האישי שלך",
+  title: "Velora | היועץ הפיננסי האישי שלך",
   description:
     "הבינו את העתיד הכלכלי שלכם, הגיעו ליעדי חיסכון וקבלו המלצות פיננסיות חכמות — בפשטות.",
-  keywords: ["פיננסים", "חיסכון", "תכנון פיננסי", "יעדים", "Personal CFO"],
+  keywords: ["פיננסים", "חיסכון", "תכנון פיננסי", "יעדים", "Velora"],
   openGraph: {
-    title: "Personal CFO",
+    title: "Velora",
     description: "מערכת קבלת החלטות פיננסיות — לא מערכת פיננסית",
     locale: "he_IL",
     type: "website",
