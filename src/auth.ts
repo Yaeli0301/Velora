@@ -23,7 +23,6 @@ if (process.env.RESEND_API_KEY && process.env.EMAIL_FROM) {
     Resend({
       apiKey: process.env.RESEND_API_KEY,
       from: process.env.EMAIL_FROM,
-      allowDangerousEmailAccountLinking: true,
     })
   );
 }
