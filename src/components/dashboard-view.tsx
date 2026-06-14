@@ -12,6 +12,7 @@ import { GOAL_LABELS } from "@/lib/constants";
 import { buildDashboardSummary } from "@/services/finance/financeService";
 import { monthsUntilTarget } from "@/services/forecast/forecastEngine";
 import { useUserProfile } from "@/hooks/use-user-profile";
+import { useSession } from "next-auth/react";
 
 const STATUS_META = {
   "on-track": { tone: "success" as const, label: "בדרך הנכונה" },
@@ -20,7 +21,8 @@ const STATUS_META = {
 };
 
 export function DashboardView() {
-  const { user, goals, transactions, fromOnboarding } = useUserProfile();
+  const { user, goals, transactions, fromOnboarding, persisted } = useUserProfile();
+  const { data: session } = useSession();
 
   const summary = buildDashboardSummary(
     user.monthlyIncome,
@@ -50,6 +52,18 @@ export function DashboardView() {
           </div>
           <Badge tone={status.tone}>{status.label}</Badge>
         </div>
+
+        {fromOnboarding && !persisted && !session?.user && (
+          <Card className="mt-6 border-primary/30 bg-primary-soft/40">
+            <CardLabel className="text-primary">שמרי את התוכנית</CardLabel>
+            <p className="mt-1 text-sm text-muted-foreground">
+              התוכנית שלך נשמרת רק במכשיר הזה. התחבר/י כדי לשמור אותה בענן.
+            </p>
+            <ButtonLink href="/login?saved=1" className="mt-4" size="sm">
+              שמור את התוכנית שלי
+            </ButtonLink>
+          </Card>
+        )}
 
         <Card className="mt-6 border-primary/30 bg-primary-soft/50">
           <CardLabel className="text-primary">השורה התחתונה</CardLabel>

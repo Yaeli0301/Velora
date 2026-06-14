@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Heebo } from "next/font/google";
 import "./globals.css";
+import { AuthSessionProvider } from "@/components/providers/session-provider";
+import { GuestDataMerger } from "@/components/auth/guest-data-merger";
 
 const heebo = Heebo({
   variable: "--font-geist-sans",
@@ -19,6 +21,15 @@ export const metadata: Metadata = {
     locale: "he_IL",
     type: "website",
   },
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "Velora",
+  },
 };
 
 export default function RootLayout({
@@ -34,7 +45,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        {children}
+        <AuthSessionProvider>
+          <GuestDataMerger />
+          {children}
+        </AuthSessionProvider>
       </body>
     </html>
   );

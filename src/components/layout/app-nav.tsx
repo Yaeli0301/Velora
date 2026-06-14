@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GaugeIcon, TargetIcon, ChatIcon } from "@/components/icons";
+import { AuthButton } from "@/components/auth/auth-button";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -56,17 +57,27 @@ export function AppHeader() {
           </span>
           <span className="text-lg font-bold tracking-tight">Velora</span>
         </Link>
-        <nav className="hidden items-center gap-1 lg:flex">
-          {LINKS.map(({ href, label, Icon, key }) => (
-            <NavLink
-              key={key}
-              href={href}
-              label={label}
-              Icon={Icon}
-              active={pathname.startsWith(href)}
-            />
-          ))}
-        </nav>
+        <div className="flex items-center gap-2">
+          <nav className="hidden items-center gap-1 lg:flex">
+            {LINKS.map(({ href, label, Icon, key }) => (
+              <NavLink
+                key={key}
+                href={href}
+                label={label}
+                Icon={Icon}
+                active={pathname.startsWith(href)}
+              />
+            ))}
+            <AuthButton compact />
+          </nav>
+          <Link
+            href="/settings"
+            className="rounded-full px-2 py-2 text-sm text-muted-foreground transition hover:bg-muted hover:text-foreground"
+            aria-label="הגדרות"
+          >
+            ⚙
+          </Link>
+        </div>
       </div>
     </header>
   );

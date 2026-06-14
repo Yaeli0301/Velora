@@ -1,4 +1,4 @@
-import type { Goal, OnboardingData, User } from "@/types";
+import type { Goal, OnboardingData, User, Transaction } from "@/types";
 import { DEFAULT_GOAL_TARGETS, GOAL_LABELS } from "@/lib/constants";
 import {
   DEMO_USER,
@@ -6,13 +6,53 @@ import {
   DEMO_GOALS,
   DEMO_BUDGETS,
 } from "@/lib/demo-data";
+import {
+  type ManualFinanceData,
+  resolveTransactions,
+  resolveMonthlyIncome,
+} from "@/lib/finance-data-store";
 
 export interface UserProfile {
   user: User;
   goals: Goal[];
-  transactions: typeof DEMO_TRANSACTIONS;
+  transactions: Transaction[];
   budgets: typeof DEMO_BUDGETS;
   fromOnboarding: boolean;
+  usesManualData: boolean;
+}
+
+export function buildUserProfile(
+  onboarding: OnboardingData | null,
+  manual: ManualFinanceData | null = null
+): UserProfile {
+  const base = onboarding ? buildFromOnboarding(onboarding) : buildDemoProfile();
+  const income = resolveMonthlyIncome(base.user.monthlyIncome, manual);
+  const transactions = resolveTransactions(manual);
+  const usesManualData = Boolean(
+    manual &&
+      (manual.totalMonthlyExpenses ||
+        manual.monthlyIncome ||
+        (manual.expensesByCategory &&
+          Object.keys(manual.expensesByCategory).length > 0))
+  );
+
+  return {
+    ...base,
+    user: { ...base.user, monthlyIncome: income },
+    transactions,
+    usesManualData,
+  };
+}
+
+function buildDemoProfile(): UserProfile {
+  return {
+    user: DEMO_USER,
+    goals: DEMO_GOALS,
+    transactions: DEMO_TRANSACTIONS,
+    budgets: DEMO_BUDGETS,
+    fromOnboarding: false,
+    usesManualData: false,
+  };
 }
 
 function buildGoalFromOnboarding(data: OnboardingData): Goal {
@@ -38,22 +78,12 @@ function buildGoalFromOnboarding(data: OnboardingData): Goal {
 }
 
 /** Merges onboarding answers with demo fixtures for a personalized profile. */
-export function buildUserProfile(onboarding: OnboardingData | null): UserProfile {
-  if (!onboarding) {
-    return {
-      user: DEMO_USER,
-      goals: DEMO_GOALS,
-      transactions: DEMO_TRANSACTIONS,
-      budgets: DEMO_BUDGETS,
-      fromOnboarding: false,
-    };
-  }
-
-  const primaryGoal = buildGoalFromOnboarding(onboarding);
+function buildFromOnboarding(data: OnboardingData): Omit<UserProfile, "usesManualData"> {
+  const primaryGoal = buildGoalFromOnboarding(data);
   const emergencyGoal: Goal = {
     ...DEMO_GOALS[1],
     userId: "user",
-    monthlyContribution: Math.round(onboarding.monthlyIncome * 0.05),
+    monthlyContribution: Math.round(data.monthlyIncome * 0.05),
   };
 
   return {
@@ -61,7 +91,7 @@ export function buildUserProfile(onboarding: OnboardingData | null): UserProfile
       ...DEMO_USER,
       _id: "user",
       name: "שלום",
-      monthlyIncome: onboarding.monthlyIncome,
+      monthlyIncome: data.monthlyIncome,
       onboardingCompleted: true,
     },
     goals: [primaryGoal, emergencyGoal],

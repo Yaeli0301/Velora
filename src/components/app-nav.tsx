@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GaugeIcon, TargetIcon, ChatIcon, WalletIcon } from "@/components/icons";
+import { AuthButton } from "@/components/auth/auth-button";
 
 const LINKS = [
   { href: "/dashboard", label: "סקירה", Icon: GaugeIcon },
@@ -29,6 +30,7 @@ export function AppNav() {
               <span className="hidden sm:inline">{label}</span>
             </Link>
           ))}
+          <AuthButton compact />
         </nav>
       </div>
     </header>
